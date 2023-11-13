@@ -85,14 +85,14 @@ class CalendarManagerGoogle:
     def __init__(self):
         self.scopes = ['https://www.googleapis.com/auth/calendar.readonly']
         self.event_count = 10
-        self.token_path = 'credentials/token.json'
+        self.token_path = 'token.json'
 
     def get_creds(self):
         # The file token.json stores the user's access and refresh tokens, and is
         # created automatically when the authorization flow completes for the first
         # time.
         creds = None
-        if os.path.exists('credentials/token.json'):
+        if os.path.exists('token.json'):
             creds = Credentials.from_authorized_user_file(self.token_path, self.scopes)
         # If there are no (valid) credentials available, let the user log in.
         if not creds or not creds.valid:
@@ -100,10 +100,10 @@ class CalendarManagerGoogle:
                 creds.refresh(Request())
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(
-                    'credentials/credentials.json', self.scopes)
+                    'credentials.json', self.scopes)
                 creds = flow.run_local_server(port=0)
             # Save the credentials for the next run
-            with open('credentials/token.json', 'w') as token:
+            with open('token.json', 'w') as token:
                 token.write(creds.to_json())
         return creds
 
@@ -367,7 +367,7 @@ class Tray(QSystemTrayIcon):
         self.settings_window.show()
 
     def logout(self):
-        os.remove('credentials/token.json')
+        os.remove('token.json')
         print('end deletening loading events')
         self.event_viewer.load_events()
         print('done loadning')
@@ -434,5 +434,6 @@ if __name__ == '__main__':
         executable_directory = os.path.dirname(shortcut.TargetPath)
         print('Changing executable dir: ', executable_directory)
         os.chdir(executable_directory)
+
 
     main()
