@@ -22,4 +22,18 @@ Right now only a few options are customizable. You can change: dimensions and po
 <br/>
 
 ## 3. How to run?
-### 1. Download current release ![Zrzut ekranu 2023-11-18 163022](https://download.panjacob.pl/4Releases.png)
+### 3.1. Download current release <br/> 
+![Zrzut ekranu 2023-11-18 163022](https://download.panjacob.pl/4Releases.png)
+### 3.2. Unpack and run CalendarWidget.exe
+### 3.3. Login to your Google account. If there is no future events then widget is not visible (to be fixed). 
+### 3.3 Tips:
+- You can move widget by holding click on a widget and moving mouse. 
+- It's possible to enable startup in settings. If file has been moved it won't work until startup is disabled and enabled again.
+- Change width and size of widget depending of your screen resolution.
+
+## 4. How to compile?
+- For this project python 3.10 was used.
+- `pip install requirements.txt`
+- create file **credentials.py**. It should look like this: <br/>
+![credentials.py](https://download.panjacob.pl/5Credentials.png)
+- To be continued...
