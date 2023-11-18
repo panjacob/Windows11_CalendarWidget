@@ -21,7 +21,10 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QSi
 
 from win32com.client import Dispatch
 
+from client_credentials import client_credentials
 
+
+# Locale for different languages
 # import locale
 # locale.setlocale(locale.LC_TIME, 'pl_pl')
 class Settings:
@@ -35,16 +38,19 @@ class Settings:
         }
 
     def save(self):
+        print('saving')
         with open(self.filename, 'w') as f:
             json.dump(self.SETTINGS, f)
 
     def load(self):
+        print('try loading', os.listdir('.'), os.getcwd())
         try:
             with open(self.filename, 'r') as settings_file:
                 self.SETTINGS = json.load(settings_file)
         except (FileNotFoundError, json.JSONDecodeError):
             self.save()
         finally:
+            print('finally loading', os.listdir('.'), os.getcwd())
             with open(self.filename, 'r') as settings_file:
                 self.SETTINGS = json.load(settings_file)
 
@@ -99,8 +105,9 @@ class CalendarManagerGoogle:
             if creds and creds.expired and creds.refresh_token:
                 creds.refresh(Request())
             else:
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    'credentials/credentials.json', self.scopes)
+                # flow = InstalledAppFlow.from_client_secrets_file(
+                #     'credentials/credentials.json', self.scopes)
+                flow = InstalledAppFlow.from_client_config(client_credentials, self.scopes)
                 creds = flow.run_local_server(port=0)
             # Save the credentials for the next run
             with open('token.json', 'w') as token:
@@ -399,7 +406,6 @@ class RepeatThread(Thread):
         while not self.stopped.is_set():
             self.f()
             self.stopped.wait(self.repeat)
-            # time.sleep(self.repeat)
 
     def close(self):
         self.stopped.set()
@@ -427,11 +433,18 @@ def main():
 
 
 if __name__ == '__main__':
+    # Autostart starts at this directory
+    if os.getcwd() == 'C:\windows\system32':
+        shortcut_path = Settings.get_new_shortcut_path()
+        shortcut_dir = os.path.dirname(shortcut_path)
+        os.chdir(shortcut_dir)
+
+    # If you open shortcut file, find where exe is located. There should be all the files needed.
     files = os.listdir('.')
     if 'CalendarWidget.lnk' in files:
         shell = Dispatch("WScript.Shell")
-        shortcut = shell.CreateShortCut('CalendarWidget.lnk')
-        executable_directory = os.path.dirname(shortcut.TargetPath)
+        shortcut_path = shell.CreateShortCut('CalendarWidget.lnk')
+        executable_directory = os.path.dirname(shortcut_path.TargetPath)
         print('Changing executable dir: ', executable_directory)
         os.chdir(executable_directory)
 
